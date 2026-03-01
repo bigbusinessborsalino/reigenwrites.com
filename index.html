@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reigen | Bot Dashboard</title>
+    <title>System Dashboard</title>
     <style>
         body {
-            background-color: #0f172a;
-            color: #f8fafc;
-            font-family: 'Courier New', Courier, monospace;
+            background-color: #f9f9f9; /* YouTube Light Background */
+            color: #0f0f0f; /* YouTube Main Text */
+            font-family: 'Roboto', Arial, sans-serif;
             text-align: center;
             margin: 0;
             padding: 40px 20px;
@@ -16,26 +16,20 @@
         .dashboard {
             max-width: 600px;
             margin: 0 auto;
-            background: #1e293b;
+            background: #ffffff; /* White Card */
             padding: 30px;
             border-radius: 12px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-            border: 1px solid #334155;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border: 1px solid #e5e5e5;
         }
         h1 {
-            color: #38bdf8;
-            margin-bottom: 5px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-        p.subtitle {
-            color: #94a3b8;
-            margin-top: 0;
-            margin-bottom: 30px;
+            color: #0f0f0f;
+            margin-bottom: 25px;
+            font-weight: 600;
         }
         .stat-box {
-            background: #0f172a;
-            border: 1px solid #38bdf8;
+            background: #f9f9f9;
+            border: 1px solid #e5e5e5;
             border-radius: 8px;
             padding: 20px;
             margin-bottom: 30px;
@@ -43,37 +37,53 @@
         .stat-number {
             font-size: 48px;
             font-weight: bold;
-            color: #10b981;
-            text-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
+            color: #ff0000; /* YouTube Red */
         }
         .stat-label {
-            color: #cbd5e1;
+            color: #606060; /* YouTube Secondary Text */
             font-size: 14px;
             text-transform: uppercase;
             letter-spacing: 1px;
             margin-top: 5px;
+            font-weight: 500;
         }
         .qr-section {
-            background: #0f172a;
+            background: #ffffff;
             padding: 20px;
             border-radius: 8px;
+            border: 1px solid #e5e5e5;
             margin-top: 20px;
         }
         .qr-img {
             width: 200px;
             height: 200px;
-            background: #cbd5e1;
+            background: #f2f2f2;
             margin: 15px auto;
             border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #0f172a;
+            color: #606060;
             font-weight: bold;
+        }
+        .gpay-btn {
+            display: inline-block;
+            background-color: #ffffff;
+            color: #3c4043;
+            border: 1px solid #dadce0;
+            padding: 10px 24px;
+            border-radius: 24px;
+            font-weight: 500;
+            text-decoration: none;
+            margin-top: 10px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+        .gpay-btn:hover {
+            background-color: #f8f9fa;
         }
         .footer-text {
             margin-top: 15px;
-            color: #64748b;
+            color: #606060;
             font-size: 12px;
         }
     </style>
@@ -82,7 +92,6 @@
 
     <div class="dashboard">
         <h1>System Status</h1>
-        <p class="subtitle">Reigen's Automated Delivery Network</p>
 
         <div class="stat-box">
             <div class="stat-number" id="visitor-count">Loading...</div>
@@ -90,18 +99,19 @@
         </div>
 
         <div class="qr-section">
-            <h3 style="color: #f1f5f9; margin-top: 0;">Support the Server Costs</h3>
-            <p style="color: #94a3b8; font-size: 14px;">Servers aren't free. Scan to keep the bot alive.</p>
+            <h3 style="color: #0f0f0f; margin-top: 0;">Support the Server Costs</h3>
+            <p style="color: #606060; font-size: 14px;">Servers aren't free. Scan to keep the bot alive.</p>
             
-            <img class="qr-img" src="YOUR_QR_CODE_LINK_HERE" alt="Payment QR Code">
+            <img class="qr-img" src="YOUR_QR_CODE_LINK_HERE" alt="GPay QR Code">
             
-            <p class="footer-text">Accepting UPI securely. Identity protected.</p>
+            <br>
+            <a href="#" class="gpay-btn">Pay with GPay</a>
+            
+            <p class="footer-text">Accepting UPI securely. Identity protected via Merchant Account.</p>
         </div>
     </div>
 
     <script>
-        // Fetches a live count from a free public API
-        // Every time someone visits, the number goes up!
         async function updateCounter() {
             try {
                 const response = await fetch('https://api.counterapi.dev/v1/reigenwrites/bot_verifications/up');
@@ -112,7 +122,6 @@
             }
         }
         
-        // Run immediately on load
         updateCounter();
     </script>
 
