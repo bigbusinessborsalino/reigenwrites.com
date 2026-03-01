@@ -6,85 +6,45 @@
     <title>System Dashboard</title>
     <style>
         body {
-            background-color: #f9f9f9; /* YouTube Light Background */
-            color: #0f0f0f; /* YouTube Main Text */
+            background-color: #f9f9f9; 
+            color: #0f0f0f; 
             font-family: 'Roboto', Arial, sans-serif;
             text-align: center;
             margin: 0;
-            padding: 40px 20px;
+            padding: 60px 20px;
         }
         .dashboard {
-            max-width: 600px;
+            max-width: 500px;
             margin: 0 auto;
-            background: #ffffff; /* White Card */
-            padding: 30px;
+            background: #ffffff; 
+            padding: 40px;
             border-radius: 12px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.05);
             border: 1px solid #e5e5e5;
         }
         h1 {
             color: #0f0f0f;
-            margin-bottom: 25px;
+            margin-bottom: 30px;
             font-weight: 600;
         }
         .stat-box {
             background: #f9f9f9;
             border: 1px solid #e5e5e5;
             border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 30px;
+            padding: 40px 20px;
         }
         .stat-number {
-            font-size: 48px;
+            font-size: 64px;
             font-weight: bold;
-            color: #ff0000; /* YouTube Red */
+            color: #ff0000; 
         }
         .stat-label {
-            color: #606060; /* YouTube Secondary Text */
-            font-size: 14px;
+            color: #606060; 
+            font-size: 16px;
             text-transform: uppercase;
             letter-spacing: 1px;
-            margin-top: 5px;
-            font-weight: 500;
-        }
-        .qr-section {
-            background: #ffffff;
-            padding: 20px;
-            border-radius: 8px;
-            border: 1px solid #e5e5e5;
-            margin-top: 20px;
-        }
-        .qr-img {
-            width: 200px;
-            height: 200px;
-            background: #f2f2f2;
-            margin: 15px auto;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #606060;
-            font-weight: bold;
-        }
-        .gpay-btn {
-            display: inline-block;
-            background-color: #ffffff;
-            color: #3c4043;
-            border: 1px solid #dadce0;
-            padding: 10px 24px;
-            border-radius: 24px;
-            font-weight: 500;
-            text-decoration: none;
             margin-top: 10px;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-        }
-        .gpay-btn:hover {
-            background-color: #f8f9fa;
-        }
-        .footer-text {
-            margin-top: 15px;
-            color: #606060;
-            font-size: 12px;
+            font-weight: 500;
         }
     </style>
 </head>
@@ -94,20 +54,8 @@
         <h1>System Status</h1>
 
         <div class="stat-box">
-            <div class="stat-number" id="visitor-count">Loading...</div>
+            <div class="stat-number" id="visitor-count">...</div>
             <div class="stat-label">Total Bot Verifications</div>
-        </div>
-
-        <div class="qr-section">
-            <h3 style="color: #0f0f0f; margin-top: 0;">Support the Server Costs</h3>
-            <p style="color: #606060; font-size: 14px;">Servers aren't free. Scan to keep the bot alive.</p>
-            
-            <img class="qr-img" src="YOUR_QR_CODE_LINK_HERE" alt="GPay QR Code">
-            
-            <br>
-            <a href="#" class="gpay-btn">Pay with GPay</a>
-            
-            <p class="footer-text">Accepting UPI securely. Identity protected via Merchant Account.</p>
         </div>
     </div>
 
@@ -118,7 +66,7 @@
                 const data = await response.json();
                 document.getElementById('visitor-count').innerText = data.count.toLocaleString();
             } catch (error) {
-                document.getElementById('visitor-count').innerText = "SYSTEM OFFLINE";
+                document.getElementById('visitor-count').innerText = "OFFLINE";
             }
         }
         
