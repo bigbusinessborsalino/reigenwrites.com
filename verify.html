@@ -5,32 +5,68 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Verifying Connection...</title>
     <style>
-        body { font-family: Arial, sans-serif; text-align: center; padding-top: 50px; background-color: #f4f4f9; color: #333; }
-        .container { max-width: 600px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
-        h2 { color: #2c3e50; }
-        #timer-text { font-size: 18px; font-weight: bold; margin: 20px 0; }
-        .btn { display: none; background: #28a745; color: white; padding: 15px 30px; text-decoration: none; border-radius: 5px; font-size: 18px; font-weight: bold; cursor: pointer; border: none; margin: 0 auto; }
-        .btn:hover { background: #218838; }
+        body { font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f4f4f9; color: #333; display: flex; justify-content: center; min-height: 100vh; }
+        .wrapper { display: flex; flex-direction: row; width: 100%; max-width: 1000px; justify-content: space-between; align-items: center; padding: 20px; box-sizing: border-box; }
+        .ad-side { width: 160px; min-height: 300px; background: #ffffff; border: 1px solid #e5e5e5; display: flex; align-items: center; justify-content: center; color: #606060; font-size: 12px; text-align: center; padding: 10px; border-radius: 8px; }
+        .main-content { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); text-align: center; flex-grow: 1; max-width: 400px; margin: 0 20px; border: 1px solid #e5e5e5; }
+        h2 { color: #0f0f0f; margin-top: 0; font-size: 20px; }
+        #timer-text { font-size: 16px; font-weight: bold; margin: 15px 0; color: #0f0f0f; }
+        .btn { display: none; background: #ff0000; color: white; padding: 12px 25px; text-decoration: none; border-radius: 5px; font-size: 18px; font-weight: bold; cursor: pointer; border: none; margin: 10px auto 0; width: 100%; transition: 0.3s; }
+        .btn:hover { background: #cc0000; }
+        
+        /* Game Styles */
+        canvas { background-color: #0f172a; border: 2px solid #334155; border-radius: 5px; box-shadow: inset 0 0 10px rgba(0,0,0,0.5); }
+        .ctrl-btn { background: #f2f2f2; border: 1px solid #ccc; padding: 12px 18px; border-radius: 5px; font-size: 18px; color: #0f0f0f; cursor: pointer; transition: 0.2s; }
+        .ctrl-btn:active { background: #e5e5e5; transform: scale(0.95); }
+        .d-pad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 15px auto; max-width: 160px; }
+        .d-pad .up { grid-column: 2; } .d-pad .left { grid-column: 1; } .d-pad .right { grid-column: 3; } .d-pad .down { grid-column: 2; }
+
+        /* Mobile Adjustments */
+        @media (max-width: 768px) {
+            .wrapper { flex-direction: column; }
+            .main-content { margin: 20px 0; width: 100%; box-sizing: border-box; }
+            .ad-side { width: 100%; min-height: 60px; }
+        }
     </style>
     
     <script type='text/javascript' src='//pl28818842.effectivegatecpm.com/b4/de/33/b4de336e5f66e83b40892d6d2b391488.js'></script>
 </head>
 <body>
 
-<div class="container">
-    <h2>Secure Bot Verification</h2>
+<div class="wrapper">
+    <div class="ad-side">
+        [ Adsterra Native/Banner Space 1 ]
+    </div>
 
-    <p id="timer-text">Please wait <span id="time" style="color:red; font-size:24px;">15</span> seconds to verify your connection...</p>
-    
-    <button id="unlock-btn" class="btn" onclick="returnToBot()">🔓 Unlock Bot Now</button>
+    <div class="main-content">
+        <h2>Verifying Access... Play Snake!</h2>
+
+        <canvas id="snakeCanvas" width="220" height="220"></canvas>
+        
+        <div class="d-pad">
+            <button class="ctrl-btn up" onclick="setDirection('UP')">▲</button>
+            <button class="ctrl-btn left" onclick="setDirection('LEFT')">◀</button>
+            <button class="ctrl-btn right" onclick="setDirection('RIGHT')">▶</button>
+            <button class="ctrl-btn down" onclick="setDirection('DOWN')">▼</button>
+        </div>
+
+        <p id="timer-text">Unlock in <span id="time" style="color:red; font-size:22px;">60</span> seconds...</p>
+        
+        <button id="unlock-btn" class="btn" onclick="returnToBot()">🔓 Unlock Bot Now</button>
+    </div>
+
+    <div class="ad-side">
+        [ Adsterra Native/Banner Space 2 ]
+    </div>
 </div>
 
 <script>
+    // --- TIMER & REDIRECT LOGIC ---
     const urlParams = new URLSearchParams(window.location.search);
     const token = urlParams.get('token');
     const botUser = urlParams.get('bot');
 
-    let timeLeft = 15;
+    let timeLeft = 60; // Set to 60 seconds
     const timerElement = document.getElementById('time');
     const timerText = document.getElementById('timer-text');
     const unlockBtn = document.getElementById('unlock-btn');
@@ -38,7 +74,6 @@
     const countdown = setInterval(() => {
         timeLeft--;
         timerElement.innerText = timeLeft;
-        
         if (timeLeft <= 0) {
             clearInterval(countdown);
             timerText.style.display = 'none'; 
@@ -47,12 +82,85 @@
     }, 1000);
 
     function returnToBot() {
-        if (token && botUser) {
-            window.location.href = `https://t.me/${botUser}?start=${token}`;
-        } else {
-            alert("Invalid verification link! Please generate a new one from the bot.");
+        if (token && botUser) { 
+            window.location.href = `https://t.me/${botUser}?start=${token}`; 
+        } else { 
+            alert("Invalid link! Please search again in the bot."); 
         }
     }
+
+    // --- SNAKE GAME LOGIC ---
+    const canvas = document.getElementById("snakeCanvas");
+    const ctx = canvas.getContext("2d");
+    const box = 10;
+    let snake = [];
+    snake[0] = { x: 10 * box, y: 10 * box };
+    let food = { x: Math.floor(Math.random() * 22) * box, y: Math.floor(Math.random() * 22) * box };
+    let d = "RIGHT";
+    let game;
+
+    document.addEventListener("keydown", direction);
+    function direction(event) {
+        if(event.keyCode == 37 && d != "RIGHT") d = "LEFT";
+        else if(event.keyCode == 38 && d != "DOWN") d = "UP";
+        else if(event.keyCode == 39 && d != "LEFT") d = "RIGHT";
+        else if(event.keyCode == 40 && d != "UP") d = "DOWN";
+    }
+
+    function setDirection(newDir) {
+        if(newDir == "LEFT" && d != "RIGHT") d = "LEFT";
+        if(newDir == "UP" && d != "DOWN") d = "UP";
+        if(newDir == "RIGHT" && d != "LEFT") d = "RIGHT";
+        if(newDir == "DOWN" && d != "UP") d = "DOWN";
+    }
+
+    function collision(head, array) {
+        for(let i = 0; i < array.length; i++) {
+            if(head.x == array[i].x && head.y == array[i].y) return true;
+        }
+        return false;
+    }
+
+    function draw() {
+        ctx.fillStyle = "#0f172a";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        for( let i = 0; i < snake.length ; i++){
+            ctx.fillStyle = ( i == 0 ) ? "#10b981" : "#059669";
+            ctx.fillRect(snake[i].x, snake[i].y, box, box);
+            ctx.strokeStyle = "#0f172a";
+            ctx.strokeRect(snake[i].x, snake[i].y, box, box);
+        }
+
+        ctx.fillStyle = "#ff0000";
+        ctx.fillRect(food.x, food.y, box, box);
+
+        let snakeX = snake[0].x;
+        let snakeY = snake[0].y;
+
+        if( d == "LEFT") snakeX -= box;
+        if( d == "UP") snakeY -= box;
+        if( d == "RIGHT") snakeX += box;
+        if( d == "DOWN") snakeY += box;
+
+        if(snakeX == food.x && snakeY == food.y) {
+            food = { x: Math.floor(Math.random() * 22) * box, y: Math.floor(Math.random() * 22) * box };
+        } else { snake.pop(); }
+
+        let newHead = { x: snakeX, y: snakeY };
+
+        if(snakeX < 0 || snakeX >= canvas.width || snakeY < 0 || snakeY >= canvas.height || collision(newHead, snake)) {
+            clearInterval(game);
+            setTimeout(() => {
+                snake = [{ x: 10 * box, y: 10 * box }];
+                d = "RIGHT";
+                game = setInterval(draw, 100);
+            }, 800);
+            return;
+        }
+        snake.unshift(newHead);
+    }
+    game = setInterval(draw, 100);
 </script>
 
 </body>
