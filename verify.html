@@ -5,28 +5,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Verifying Connection...</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f9f9f9; color: #0f0f0f; display: flex; justify-content: center; min-height: 100vh; }
-        .wrapper { display: flex; flex-direction: row; width: 100%; max-width: 1200px; justify-content: space-between; align-items: flex-start; padding: 20px; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 0; background-color: #f9f9f9; color: #0f0f0f; display: flex; justify-content: center; min-height: 100vh; }
+        .wrapper { display: flex; flex-direction: row; width: 100%; max-width: 1400px; justify-content: space-between; align-items: flex-start; padding: 20px; box-sizing: border-box; }
         
-        /* 🛡️ SAFE ZONES FOR TEXT ADS */
-        .ad-side { width: 180px; min-height: 400px; display: flex; flex-direction: column; gap: 10px; align-items: center; justify-content: flex-start; padding: 10px; }
-        .ad-placeholder { width: 100%; background: #fff; border: 1px solid #eee; border-radius: 4px; padding: 15px; font-size: 12px; color: #999; text-align: center; min-height: 100px; display: flex; align-items: center; justify-content: center; }
+        /* 🛡️ FIXED SIDEBARS FOR TEXT ADS */
+        .ad-side { width: 200px; position: sticky; top: 20px; min-height: 500px; display: flex; flex-direction: column; gap: 15px; }
+        .ad-placeholder { width: 100%; background: transparent; display: flex; align-items: center; justify-content: center; height: 100%; }
 
-        .main-content { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); text-align: center; flex-grow: 1; max-width: 420px; margin: 0 15px; border: 1px solid #e5e5e5; }
+        .main-content { background: white; padding: 30px; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); text-align: center; flex-grow: 1; max-width: 450px; margin: 0 20px; border: 1px solid #e5e5e5; }
         
-        h2 { color: #0f0f0f; margin: 0 0 15px 0; font-size: 18px; }
-        #timer-text { font-size: 15px; font-weight: bold; margin: 15px 0; color: #0f0f0f; }
+        h2 { color: #0f0f0f; margin: 0 0 20px 0; font-size: 22px; font-weight: 600; }
+        #timer-text { font-size: 16px; font-weight: bold; margin: 20px 0; color: #0f0f0f; }
         
-        .btn { display: none; background: #ff0000; color: white; padding: 14px; text-decoration: none; border-radius: 6px; font-size: 18px; font-weight: bold; cursor: pointer; border: none; width: 100%; }
+        .btn { display: none; background: #ff0000; color: white; padding: 16px; text-decoration: none; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; border: none; width: 100%; transition: 0.2s; }
+        .btn:hover { background: #cc0000; transform: translateY(-2px); }
 
-        /* 🐍 SNAKE GAME: TOUCH TO PLAY */
-        canvas { background-color: #0f172a; border: 2px solid #334155; border-radius: 8px; display: block; margin: 0 auto; cursor: pointer; touch-action: none; }
-        .game-hint { font-size: 13px; color: #606060; margin-top: 10px; font-weight: 500; }
+        /* 🐍 BIG SCREEN SNAKE GAME */
+        canvas { background-color: #0f172a; border: 3px solid #1e293b; border-radius: 12px; display: block; margin: 0 auto; cursor: pointer; touch-action: none; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+        .game-hint { font-size: 14px; color: #606060; margin-top: 12px; font-weight: 500; }
 
-        @media (max-width: 768px) {
+        @media (max-width: 900px) {
             .wrapper { flex-direction: column; align-items: center; }
-            .ad-side { width: 100%; min-height: auto; flex-direction: row; justify-content: center; order: 2; margin-top: 20px; }
-            .ad-placeholder { width: 45%; min-height: 60px; }
+            .ad-side { width: 100%; position: static; min-height: auto; flex-direction: row; justify-content: center; order: 2; margin-top: 30px; }
+            .ad-placeholder { width: 48%; }
             .main-content { order: 1; width: 100%; margin: 0; box-sizing: border-box; }
         }
     </style>
@@ -36,25 +37,31 @@
 <div class="wrapper">
     <div class="ad-side">
         <div class="ad-placeholder">
-            TEXT AD SPACE
-        </div>
+            <div id="frame" style="width: 100%;margin: auto;position: relative; z-index: 99998;">
+                <iframe data-aa='2429105' src='//acceptable.a-ads.com/2429105/?size=Adaptive'
+                        style='border:0; padding:0; width:100%; height:100%; overflow:hidden;display: block;margin: auto'></iframe>
+            </div>
+            </div>
     </div>
 
     <div class="main-content">
-        <h2>Verify to Continue</h2>
+        <h2>Verify to Access Bot</h2>
 
-        <canvas id="snakeCanvas" width="240" height="240"></canvas>
-        <p class="game-hint">Tap the game box to turn Snake!</p>
+        <canvas id="snakeCanvas" width="320" height="320"></canvas>
+        <p class="game-hint">Tap the box to steer the Snake!</p>
 
-        <p id="timer-text">Unlocking in <span id="time" style="color:red; font-size:22px;">60</span> seconds...</p>
+        <p id="timer-text">Bot Unlocks in <span id="time" style="color:red; font-size:24px;">60</span>s</p>
         
         <button id="unlock-btn" class="btn" onclick="returnToBot()">🔓 Unlock Bot Now</button>
     </div>
 
     <div class="ad-side">
         <div class="ad-placeholder">
-            TEXT AD SPACE
-        </div>
+            <div id="frame" style="width: 100%;margin: auto;position: relative; z-index: 99998;">
+                <iframe data-aa='2429105' src='//acceptable.a-ads.com/2429105/?size=Adaptive'
+                        style='border:0; padding:0; width:100%; height:100%; overflow:hidden;display: block;margin: auto'></iframe>
+            </div>
+            </div>
     </div>
 </div>
 
@@ -79,22 +86,18 @@
     }, 1000);
 
     function returnToBot() {
-        if (token && botUser) { 
-            window.location.href = `https://t.me/${botUser}?start=${token}`; 
-        } else { 
-            alert("Error: Link invalid. Search again in the bot."); 
-        }
+        if (token && botUser) { window.location.href = `https://t.me/${botUser}?start=${token}`; } 
+        else { alert("Link Error: Please restart search in Telegram."); }
     }
 
-    // --- SNAKE GAME: CLICK TO TURN ---
+    // --- BIG SCREEN SNAKE LOGIC ---
     const canvas = document.getElementById("snakeCanvas");
     const ctx = canvas.getContext("2d");
-    const box = 12;
+    const box = 16; 
     let snake = [{ x: 10 * box, y: 10 * box }];
     let food = { x: Math.floor(Math.random() * 20) * box, y: Math.floor(Math.random() * 20) * box };
     let d = "RIGHT";
 
-    // Change direction clockwise on tap/click
     canvas.addEventListener("pointerdown", (e) => {
         e.preventDefault();
         if (d === "RIGHT") d = "DOWN";
@@ -109,11 +112,15 @@
 
         for(let i = 0; i < snake.length; i++){
             ctx.fillStyle = (i == 0) ? "#10b981" : "#059669";
-            ctx.fillRect(snake[i].x, snake[i].y, box, box);
+            ctx.beginPath();
+            ctx.roundRect(snake[i].x, snake[i].y, box-1, box-1, 4);
+            ctx.fill();
         }
 
-        ctx.fillStyle = "#ff0000";
-        ctx.fillRect(food.x, food.y, box, box);
+        ctx.fillStyle = "#ff4757";
+        ctx.beginPath();
+        ctx.roundRect(food.x, food.y, box-1, box-1, 8);
+        ctx.fill();
 
         let snakeX = snake[0].x;
         let snakeY = snake[0].y;
@@ -144,7 +151,7 @@
         return false;
     }
 
-    setInterval(draw, 120);
+    setInterval(draw, 100);
 </script>
 
 </body>
