@@ -4,38 +4,30 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Verifying Connection...</title>
-    
-    <script src="https://quge5.com/88/tag.min.js" data-zone="215378" async data-cfasync="false"></script>
-
     <style>
-        body { font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f4f4f9; color: #333; display: flex; justify-content: center; min-height: 100vh; overflow-x: hidden; }
-        
-        /* 🛡️ SAFE ZONE LAYOUT: Ads stay on the sides, Game stays center */
+        body { font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f9f9f9; color: #0f0f0f; display: flex; justify-content: center; min-height: 100vh; }
         .wrapper { display: flex; flex-direction: row; width: 100%; max-width: 1200px; justify-content: space-between; align-items: flex-start; padding: 20px; box-sizing: border-box; }
         
-        .ad-side { width: 160px; min-height: 400px; background: transparent; display: flex; align-items: center; justify-content: center; padding: 10px; border-radius: 8px; }
-        
-        .main-content { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); text-align: center; flex-grow: 1; max-width: 420px; margin: 0 10px; border: 1px solid #e5e5e5; z-index: 10; }
-        
-        h2 { color: #0f0f0f; margin-top: 0; font-size: 18px; }
-        #timer-text { font-size: 15px; font-weight: bold; margin: 10px 0; color: #0f0f0f; }
-        
-        .btn { display: none; background: #ff0000; color: white; padding: 12px 25px; text-decoration: none; border-radius: 5px; font-size: 18px; font-weight: bold; cursor: pointer; border: none; width: 100%; margin-top: 10px; }
-        
-        /* 🐍 SNAKE GAME STYLES */
-        canvas { background-color: #0f172a; border: 2px solid #334155; border-radius: 5px; display: block; margin: 0 auto; touch-action: none; }
-        
-        .ctrl-btn { background: #f2f2f2; border: 1px solid #ccc; padding: 15px; border-radius: 8px; font-size: 20px; color: #0f0f0f; cursor: pointer; -webkit-tap-highlight-color: transparent; }
-        .ctrl-btn:active { background: #e5e5e5; }
-        
-        .d-pad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 15px auto; max-width: 180px; }
-        .d-pad .up { grid-column: 2; } .d-pad .left { grid-column: 1; } .d-pad .right { grid-column: 3; } .d-pad .down { grid-column: 2; }
+        /* 🛡️ SAFE ZONES FOR TEXT ADS */
+        .ad-side { width: 180px; min-height: 400px; display: flex; flex-direction: column; gap: 10px; align-items: center; justify-content: flex-start; padding: 10px; }
+        .ad-placeholder { width: 100%; background: #fff; border: 1px solid #eee; border-radius: 4px; padding: 15px; font-size: 12px; color: #999; text-align: center; min-height: 100px; display: flex; align-items: center; justify-content: center; }
 
-        /* 📱 MOBILE: Stack ads top/bottom to keep white space clear */
+        .main-content { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); text-align: center; flex-grow: 1; max-width: 420px; margin: 0 15px; border: 1px solid #e5e5e5; }
+        
+        h2 { color: #0f0f0f; margin: 0 0 15px 0; font-size: 18px; }
+        #timer-text { font-size: 15px; font-weight: bold; margin: 15px 0; color: #0f0f0f; }
+        
+        .btn { display: none; background: #ff0000; color: white; padding: 14px; text-decoration: none; border-radius: 6px; font-size: 18px; font-weight: bold; cursor: pointer; border: none; width: 100%; }
+
+        /* 🐍 SNAKE GAME: TOUCH TO PLAY */
+        canvas { background-color: #0f172a; border: 2px solid #334155; border-radius: 8px; display: block; margin: 0 auto; cursor: pointer; touch-action: none; }
+        .game-hint { font-size: 13px; color: #606060; margin-top: 10px; font-weight: 500; }
+
         @media (max-width: 768px) {
             .wrapper { flex-direction: column; align-items: center; }
-            .ad-side { width: 100%; min-height: 80px; order: 2; }
-            .main-content { order: 1; margin: 10px 0; width: 100%; }
+            .ad-side { width: 100%; min-height: auto; flex-direction: row; justify-content: center; order: 2; margin-top: 20px; }
+            .ad-placeholder { width: 45%; min-height: 60px; }
+            .main-content { order: 1; width: 100%; margin: 0; box-sizing: border-box; }
         }
     </style>
 </head>
@@ -43,31 +35,31 @@
 
 <div class="wrapper">
     <div class="ad-side">
+        <div class="ad-placeholder">
+            TEXT AD SPACE
         </div>
+    </div>
 
     <div class="main-content">
-        <h2>Verify to Continue...</h2>
+        <h2>Verify to Continue</h2>
 
-        <canvas id="snakeCanvas" width="220" height="220"></canvas>
-        
-        <div class="d-pad">
-            <button class="ctrl-btn up" onclick="setDirection('UP')">▲</button>
-            <button class="ctrl-btn left" onclick="setDirection('LEFT')">◀</button>
-            <button class="ctrl-btn right" onclick="setDirection('RIGHT')">▶</button>
-            <button class="ctrl-btn down" onclick="setDirection('DOWN')">▼</button>
-        </div>
+        <canvas id="snakeCanvas" width="240" height="240"></canvas>
+        <p class="game-hint">Tap the game box to turn Snake!</p>
 
-        <p id="timer-text">Wait <span id="time" style="color:red; font-size:22px;">60</span> seconds to unlock...</p>
+        <p id="timer-text">Unlocking in <span id="time" style="color:red; font-size:22px;">60</span> seconds...</p>
         
         <button id="unlock-btn" class="btn" onclick="returnToBot()">🔓 Unlock Bot Now</button>
     </div>
 
     <div class="ad-side">
+        <div class="ad-placeholder">
+            TEXT AD SPACE
         </div>
+    </div>
 </div>
 
 <script>
-    // --- TIMER & REDIRECT ---
+    // --- TIMER LOGIC ---
     const urlParams = new URLSearchParams(window.location.search);
     const token = urlParams.get('token');
     const botUser = urlParams.get('bot');
@@ -90,24 +82,26 @@
         if (token && botUser) { 
             window.location.href = `https://t.me/${botUser}?start=${token}`; 
         } else { 
-            alert("Error: Please restart the bot search."); 
+            alert("Error: Link invalid. Search again in the bot."); 
         }
     }
 
-    // --- GAME LOGIC ---
+    // --- SNAKE GAME: CLICK TO TURN ---
     const canvas = document.getElementById("snakeCanvas");
     const ctx = canvas.getContext("2d");
-    const box = 10;
+    const box = 12;
     let snake = [{ x: 10 * box, y: 10 * box }];
-    let food = { x: Math.floor(Math.random() * 22) * box, y: Math.floor(Math.random() * 22) * box };
+    let food = { x: Math.floor(Math.random() * 20) * box, y: Math.floor(Math.random() * 20) * box };
     let d = "RIGHT";
 
-    function setDirection(newDir) {
-        if(newDir == "LEFT" && d != "RIGHT") d = "LEFT";
-        if(newDir == "UP" && d != "DOWN") d = "UP";
-        if(newDir == "RIGHT" && d != "LEFT") d = "RIGHT";
-        if(newDir == "DOWN" && d != "UP") d = "DOWN";
-    }
+    // Change direction clockwise on tap/click
+    canvas.addEventListener("pointerdown", (e) => {
+        e.preventDefault();
+        if (d === "RIGHT") d = "DOWN";
+        else if (d === "DOWN") d = "LEFT";
+        else if (d === "LEFT") d = "UP";
+        else if (d === "UP") d = "RIGHT";
+    });
 
     function draw() {
         ctx.fillStyle = "#0f172a";
@@ -124,13 +118,13 @@
         let snakeX = snake[0].x;
         let snakeY = snake[0].y;
 
-        if( d == "LEFT") snakeX -= box;
-        if( d == "UP") snakeY -= box;
-        if( d == "RIGHT") snakeX += box;
-        if( d == "DOWN") snakeY += box;
+        if(d == "LEFT") snakeX -= box;
+        if(d == "UP") snakeY -= box;
+        if(d == "RIGHT") snakeX += box;
+        if(d == "DOWN") snakeY += box;
 
         if(snakeX == food.x && snakeY == food.y) {
-            food = { x: Math.floor(Math.random() * 22) * box, y: Math.floor(Math.random() * 22) * box };
+            food = { x: Math.floor(Math.random() * 20) * box, y: Math.floor(Math.random() * 20) * box };
         } else { snake.pop(); }
 
         let newHead = { x: snakeX, y: snakeY };
@@ -150,7 +144,7 @@
         return false;
     }
 
-    let game = setInterval(draw, 100);
+    setInterval(draw, 120);
 </script>
 
 </body>
