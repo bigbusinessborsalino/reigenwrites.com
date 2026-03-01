@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verifying Connection...</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; padding-top: 50px; background-color: #f4f4f9; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        h2 { color: #2c3e50; }
+        #timer-text { font-size: 18px; font-weight: bold; margin: 20px 0; }
+        .ad-space { margin: 20px 0; padding: 50px 20px; background: #e9ecef; border: 2px dashed #ccc; color: #888; }
+        .btn { display: none; background: #28a745; color: white; padding: 15px 30px; text-decoration: none; border-radius: 5px; font-size: 18px; font-weight: bold; cursor: pointer; border: none; margin: 0 auto; }
+        .btn:hover { background: #218838; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Secure Bot Verification</h2>
+    
+    <div class="ad-space">
+        <p>[ Banner Ad Space ]</p>
+    </div>
+
+    <p id="timer-text">Please wait <span id="time" style="color:red; font-size:24px;">15</span> seconds to verify your connection...</p>
+    
+    <button id="unlock-btn" class="btn" onclick="returnToBot()">🔓 Unlock Bot Now</button>
+
+    <div class="ad-space">
+        <p>[ Second Banner Ad Space ]</p>
+    </div>
+</div>
+
+<script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const token = urlParams.get('token');
+    const botUser = urlParams.get('bot');
+
+    let timeLeft = 15;
+    const timerElement = document.getElementById('time');
+    const timerText = document.getElementById('timer-text');
+    const unlockBtn = document.getElementById('unlock-btn');
+
+    const countdown = setInterval(() => {
+        timeLeft--;
+        timerElement.innerText = timeLeft;
+        
+        if (timeLeft <= 0) {
+            clearInterval(countdown);
+            timerText.style.display = 'none'; 
+            unlockBtn.style.display = 'block'; 
+        }
+    }, 1000);
+
+    function returnToBot() {
+        if (token && botUser) {
+            window.location.href = `https://t.me/${botUser}?start=${token}`;
+        } else {
+            alert("Invalid verification link! Please generate a new one from the bot.");
+        }
+    }
+</script>
+
+</body>
+</html>
