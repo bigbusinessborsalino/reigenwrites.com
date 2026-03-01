@@ -4,42 +4,49 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Verifying Connection...</title>
+    
+    <script src="https://quge5.com/88/tag.min.js" data-zone="215378" async data-cfasync="false"></script>
+
     <style>
-        body { font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f4f4f9; color: #333; display: flex; justify-content: center; min-height: 100vh; }
-        .wrapper { display: flex; flex-direction: row; width: 100%; max-width: 1000px; justify-content: space-between; align-items: center; padding: 20px; box-sizing: border-box; }
-        .ad-side { width: 160px; min-height: 300px; background: #ffffff; border: 1px solid #e5e5e5; display: flex; align-items: center; justify-content: center; color: #606060; font-size: 12px; text-align: center; padding: 10px; border-radius: 8px; }
-        .main-content { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); text-align: center; flex-grow: 1; max-width: 400px; margin: 0 20px; border: 1px solid #e5e5e5; }
-        h2 { color: #0f0f0f; margin-top: 0; font-size: 20px; }
-        #timer-text { font-size: 16px; font-weight: bold; margin: 15px 0; color: #0f0f0f; }
-        .btn { display: none; background: #ff0000; color: white; padding: 12px 25px; text-decoration: none; border-radius: 5px; font-size: 18px; font-weight: bold; cursor: pointer; border: none; margin: 10px auto 0; width: 100%; transition: 0.3s; }
-        .btn:hover { background: #cc0000; }
+        body { font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f4f4f9; color: #333; display: flex; justify-content: center; min-height: 100vh; overflow-x: hidden; }
         
-        /* Game Styles */
-        canvas { background-color: #0f172a; border: 2px solid #334155; border-radius: 5px; box-shadow: inset 0 0 10px rgba(0,0,0,0.5); }
-        .ctrl-btn { background: #f2f2f2; border: 1px solid #ccc; padding: 12px 18px; border-radius: 5px; font-size: 18px; color: #0f0f0f; cursor: pointer; transition: 0.2s; }
-        .ctrl-btn:active { background: #e5e5e5; transform: scale(0.95); }
-        .d-pad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 15px auto; max-width: 160px; }
+        /* 🛡️ SAFE ZONE LAYOUT: Ads stay on the sides, Game stays center */
+        .wrapper { display: flex; flex-direction: row; width: 100%; max-width: 1200px; justify-content: space-between; align-items: flex-start; padding: 20px; box-sizing: border-box; }
+        
+        .ad-side { width: 160px; min-height: 400px; background: transparent; display: flex; align-items: center; justify-content: center; padding: 10px; border-radius: 8px; }
+        
+        .main-content { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); text-align: center; flex-grow: 1; max-width: 420px; margin: 0 10px; border: 1px solid #e5e5e5; z-index: 10; }
+        
+        h2 { color: #0f0f0f; margin-top: 0; font-size: 18px; }
+        #timer-text { font-size: 15px; font-weight: bold; margin: 10px 0; color: #0f0f0f; }
+        
+        .btn { display: none; background: #ff0000; color: white; padding: 12px 25px; text-decoration: none; border-radius: 5px; font-size: 18px; font-weight: bold; cursor: pointer; border: none; width: 100%; margin-top: 10px; }
+        
+        /* 🐍 SNAKE GAME STYLES */
+        canvas { background-color: #0f172a; border: 2px solid #334155; border-radius: 5px; display: block; margin: 0 auto; touch-action: none; }
+        
+        .ctrl-btn { background: #f2f2f2; border: 1px solid #ccc; padding: 15px; border-radius: 8px; font-size: 20px; color: #0f0f0f; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+        .ctrl-btn:active { background: #e5e5e5; }
+        
+        .d-pad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 15px auto; max-width: 180px; }
         .d-pad .up { grid-column: 2; } .d-pad .left { grid-column: 1; } .d-pad .right { grid-column: 3; } .d-pad .down { grid-column: 2; }
 
-        /* Mobile Adjustments */
+        /* 📱 MOBILE: Stack ads top/bottom to keep white space clear */
         @media (max-width: 768px) {
-            .wrapper { flex-direction: column; }
-            .main-content { margin: 20px 0; width: 100%; box-sizing: border-box; }
-            .ad-side { width: 100%; min-height: 60px; }
+            .wrapper { flex-direction: column; align-items: center; }
+            .ad-side { width: 100%; min-height: 80px; order: 2; }
+            .main-content { order: 1; margin: 10px 0; width: 100%; }
         }
     </style>
-    
-    <script type='text/javascript' src='//pl28818842.effectivegatecpm.com/b4/de/33/b4de336e5f66e83b40892d6d2b391488.js'></script>
 </head>
 <body>
 
 <div class="wrapper">
     <div class="ad-side">
-        [ Adsterra Native/Banner Space 1 ]
-    </div>
+        </div>
 
     <div class="main-content">
-        <h2>Verifying Access... Play Snake!</h2>
+        <h2>Verify to Continue...</h2>
 
         <canvas id="snakeCanvas" width="220" height="220"></canvas>
         
@@ -50,25 +57,23 @@
             <button class="ctrl-btn down" onclick="setDirection('DOWN')">▼</button>
         </div>
 
-        <p id="timer-text">Unlock in <span id="time" style="color:red; font-size:22px;">60</span> seconds...</p>
+        <p id="timer-text">Wait <span id="time" style="color:red; font-size:22px;">60</span> seconds to unlock...</p>
         
         <button id="unlock-btn" class="btn" onclick="returnToBot()">🔓 Unlock Bot Now</button>
     </div>
 
     <div class="ad-side">
-        [ Adsterra Native/Banner Space 2 ]
-    </div>
+        </div>
 </div>
 
 <script>
-    // --- TIMER & REDIRECT LOGIC ---
+    // --- TIMER & REDIRECT ---
     const urlParams = new URLSearchParams(window.location.search);
     const token = urlParams.get('token');
     const botUser = urlParams.get('bot');
 
-    let timeLeft = 60; // Set to 60 seconds
+    let timeLeft = 60; 
     const timerElement = document.getElementById('time');
-    const timerText = document.getElementById('timer-text');
     const unlockBtn = document.getElementById('unlock-btn');
 
     const countdown = setInterval(() => {
@@ -76,7 +81,7 @@
         timerElement.innerText = timeLeft;
         if (timeLeft <= 0) {
             clearInterval(countdown);
-            timerText.style.display = 'none'; 
+            document.getElementById('timer-text').style.display = 'none'; 
             unlockBtn.style.display = 'block'; 
         }
     }, 1000);
@@ -85,27 +90,17 @@
         if (token && botUser) { 
             window.location.href = `https://t.me/${botUser}?start=${token}`; 
         } else { 
-            alert("Invalid link! Please search again in the bot."); 
+            alert("Error: Please restart the bot search."); 
         }
     }
 
-    // --- SNAKE GAME LOGIC ---
+    // --- GAME LOGIC ---
     const canvas = document.getElementById("snakeCanvas");
     const ctx = canvas.getContext("2d");
     const box = 10;
-    let snake = [];
-    snake[0] = { x: 10 * box, y: 10 * box };
+    let snake = [{ x: 10 * box, y: 10 * box }];
     let food = { x: Math.floor(Math.random() * 22) * box, y: Math.floor(Math.random() * 22) * box };
     let d = "RIGHT";
-    let game;
-
-    document.addEventListener("keydown", direction);
-    function direction(event) {
-        if(event.keyCode == 37 && d != "RIGHT") d = "LEFT";
-        else if(event.keyCode == 38 && d != "DOWN") d = "UP";
-        else if(event.keyCode == 39 && d != "LEFT") d = "RIGHT";
-        else if(event.keyCode == 40 && d != "UP") d = "DOWN";
-    }
 
     function setDirection(newDir) {
         if(newDir == "LEFT" && d != "RIGHT") d = "LEFT";
@@ -114,22 +109,13 @@
         if(newDir == "DOWN" && d != "UP") d = "DOWN";
     }
 
-    function collision(head, array) {
-        for(let i = 0; i < array.length; i++) {
-            if(head.x == array[i].x && head.y == array[i].y) return true;
-        }
-        return false;
-    }
-
     function draw() {
         ctx.fillStyle = "#0f172a";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-        for( let i = 0; i < snake.length ; i++){
-            ctx.fillStyle = ( i == 0 ) ? "#10b981" : "#059669";
+        for(let i = 0; i < snake.length; i++){
+            ctx.fillStyle = (i == 0) ? "#10b981" : "#059669";
             ctx.fillRect(snake[i].x, snake[i].y, box, box);
-            ctx.strokeStyle = "#0f172a";
-            ctx.strokeRect(snake[i].x, snake[i].y, box, box);
         }
 
         ctx.fillStyle = "#ff0000";
@@ -150,17 +136,21 @@
         let newHead = { x: snakeX, y: snakeY };
 
         if(snakeX < 0 || snakeX >= canvas.width || snakeY < 0 || snakeY >= canvas.height || collision(newHead, snake)) {
-            clearInterval(game);
-            setTimeout(() => {
-                snake = [{ x: 10 * box, y: 10 * box }];
-                d = "RIGHT";
-                game = setInterval(draw, 100);
-            }, 800);
-            return;
+            snake = [{ x: 10 * box, y: 10 * box }];
+            d = "RIGHT";
+        } else {
+            snake.unshift(newHead);
         }
-        snake.unshift(newHead);
     }
-    game = setInterval(draw, 100);
+
+    function collision(head, array) {
+        for(let i = 0; i < array.length; i++) {
+            if(head.x == array[i].x && head.y == array[i].y) return true;
+        }
+        return false;
+    }
+
+    let game = setInterval(draw, 100);
 </script>
 
 </body>
