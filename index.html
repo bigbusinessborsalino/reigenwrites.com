@@ -1,77 +1,153 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>System Dashboard</title>
-    <style>
-        body {
-            background-color: #f9f9f9; 
-            color: #0f0f0f; 
-            font-family: 'Roboto', Arial, sans-serif;
-            text-align: center;
-            margin: 0;
-            padding: 60px 20px;
-        }
-        .dashboard {
-            max-width: 500px;
-            margin: 0 auto;
-            background: #ffffff; 
-            padding: 40px;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-            border: 1px solid #e5e5e5;
-        }
-        h1 {
-            color: #0f0f0f;
-            margin-bottom: 30px;
-            font-weight: 600;
-        }
-        .stat-box {
-            background: #f9f9f9;
-            border: 1px solid #e5e5e5;
-            border-radius: 8px;
-            padding: 40px 20px;
-        }
-        .stat-number {
-            font-size: 64px;
-            font-weight: bold;
-            color: #ff0000; 
-        }
-        .stat-label {
-            color: #606060; 
-            font-size: 16px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-top: 10px;
-            font-weight: 500;
-        }
-    </style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>sumit403 — Docs (Jupyter & Colab)</title>
+  <style>
+    :root{
+      --bg:#f9f9f9; --card:#ffffff; --muted:#606060; --accent:#ff0000; --text:#0f0f0f;
+      --maxw:1100px;
+    }
+    html,body{height:100%;margin:0;background:var(--bg);font-family:Inter, "Segoe UI", Roboto, Arial, sans-serif;color:var(--text);}
+    .wrap{max-width:var(--maxw);margin:32px auto;padding:28px;display:flex;gap:24px;box-sizing:border-box;}
+    .left{flex:1;min-width:320px}
+    .right{width:340px;display:flex;flex-direction:column;gap:16px}
+    .card{background:var(--card);border-radius:12px;padding:20px;box-shadow:0 8px 30px rgba(15,15,15,0.05);border:1px solid #eaeaea}
+    h1{margin:0 0 8px;font-size:24px}
+    p.lead{margin:6px 0 16px;color:var(--muted)}
+    pre{background:#f6f8fa;padding:14px;border-radius:8px;overflow:auto}
+    .small{font-size:13px;color:var(--muted)}
+    .cta{display:inline-block;background:var(--accent);color:white;padding:10px 14px;border-radius:8px;text-decoration:none;font-weight:600}
+    .list{margin:12px 0 0 0;padding-left:18px}
+    .list li{margin:8px 0}
+    code{background:#f4f6f8;padding:2px 6px;border-radius:6px;font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", monospace}
+    .floating-counter{position:fixed;right:14px;top:14px;z-index:99999;background:rgba(255,255,255,0.95);border:1px solid #eee;padding:8px 12px;border-radius:10px;box-shadow:0 6px 20px rgba(15,15,15,0.06);display:flex;align-items:center;gap:10px;min-width:120px}
+    .count-number{font-weight:700;color:var(--accent);font-size:18px}
+    .badge-label{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:0.6px}
+    .colab-btn{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:8px;background:#121212;color:white;text-decoration:none;font-weight:600}
+    .link-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+    footer{margin-top:18px;color:var(--muted);font-size:13px}
+    @media (max-width:980px){.wrap{flex-direction:column;padding:18px}.right{width:100%}}
+  </style>
 </head>
 <body>
 
-    <div class="dashboard">
-        <h1>System Status</h1>
-
-        <div class="stat-box">
-            <div class="stat-number" id="visitor-count">...</div>
-            <div class="stat-label">Total Bot Verifications</div>
-        </div>
+  <div class="floating-counter" id="visitorBadge" aria-live="polite" title="Visitor counter">
+    <div style="display:flex;flex-direction:column;">
+      <div class="count-number" id="visitorCount">…</div>
+      <div class="badge-label">Visitors</div>
     </div>
+    <div style="font-size:12px;color:#999">•</div>
+    <div class="small">bot verifications</div>
+  </div>
 
-    <script>
-        async function updateCounter() {
-            try {
-                const response = await fetch('https://api.counterapi.dev/v1/reigenwrites/bot_verifications/up');
-                const data = await response.json();
-                document.getElementById('visitor-count').innerText = data.count.toLocaleString();
-            } catch (error) {
-                document.getElementById('visitor-count').innerText = "OFFLINE";
-            }
+  <main class="wrap" role="main">
+    <section class="left">
+      <div class="card">
+        <h1>sumit403</h1>
+        <p class="lead">A Jupyter / Google Colab snippet injector that inserts ready-to-run deep-learning experiment templates into the next notebook cell. Designed for students and learners to quickly prototype experiments inside notebooks.</p>
+
+        <h3>Quick start</h3>
+        <pre><code>pip install sumit403
+
+# in a Jupyter cell:
+import sumit403
+sumit403.p1()  # inserts experiment 1 into the next cell
+</code></pre>
+
+        <h3>Available experiments (short)</h3>
+        <ul class="list">
+          <li><code>p1()</code> — Feed-forward MNIST example (Flatten → Dense → Softmax)</li>
+          <li><code>p2()</code> — XOR perceptron demo (tiny MLP)</li>
+          <li><code>p3()</code> — Image classification training flow (train / val)</li>
+          <li><code>p4()</code> — Small CNN demo (PyTorch)</li>
+          <li><code>p5()</code> — Sentiment analysis (RNN / LSTM, IMDB)</li>
+          <li><code>p6()</code> — LSTM autoencoder for time-series reconstruction</li>
+          <li><code>p7()</code> — Small GAN training loop (generator + discriminator)</li>
+        </ul>
+
+        <h3>Google Colab usage</h3>
+        <pre><code>!pip install sumit403
+import sumit403
+sumit403.p3()  # inserts the image-classification template</code></pre>
+
+        <h3>Notes & tips</h3>
+        <ul class="list">
+          <li>Snippets contain heavy-library imports inside the injected code (e.g., <code>tensorflow</code>, <code>torch</code>). Those libraries are <em>not</em> imported at package import time.</li>
+          <li>Install only the libraries you need for the experiment you plan to run, e.g. <code>pip install tensorflow matplotlib</code>.</li>
+          <li>For heavy experiments (GANs / large LSTMs) use a fresh Colab runtime and enable GPU.</li>
+        </ul>
+
+        <h3>Ethics & academic integrity</h3>
+        <p class="small">These templates are educational. Do not use them to submit others’ work or bypass academic policies. Use them to learn, prototype, and test ideas ethically.</p>
+
+        <footer>
+          <div class="link-row">
+            <a class="cta" href="https://pypi.org/project/sumit403" target="_blank" rel="noopener noreferrer">View on PyPI</a>
+            <a class="colab-btn" href="https://colab.research.google.com/github/YOUR-GITHUB-REPO/blob/main/examples/demo.ipynb" target="_blank" rel="noopener noreferrer">Open demo in Colab</a>
+          </div>
+          <div style="margin-top:10px" class="small">Hosted on Render — replace the links above with your repo / demo URLs.</div>
+        </footer>
+      </div>
+    </section>
+
+    <aside class="right">
+      <div class="card">
+        <h3>Install</h3>
+        <pre><code>pip install sumit403</code></pre>
+        <p class="small">For Colab: <code>!pip install sumit403</code></p>
+
+        <h3>Examples</h3>
+        <p class="small">Add an `examples/demo.ipynb` to your repo and link it above for a one-click Colab demo.</p>
+
+        <h3>Files to update</h3>
+        <ul class="list small">
+          <li><code>setup.py</code> → version &amp; url</li>
+          <li><code>README.md</code> → short usage &amp; ethics</li>
+          <li><code>examples/demo.ipynb</code> → interactive demo</li>
+        </ul>
+      </div>
+
+      <div class="card small">
+        <strong>Pro tip</strong><br>
+        Keep heavy library installs out of the package metadata — document them in the README instead.
+      </div>
+    </aside>
+  </main>
+
+  <script>
+    // ---------- Visitor counter (compact floating badge) ----------
+    // This uses the same 'counterapi' style endpoint you used earlier.
+    // Replace the URL below with your own counter API path if required.
+
+    async function fetchVisitorCount() {
+      try {
+        const res = await fetch('https://api.counterapi.dev/v1/reigenwrites/bot_verifications/up', { method: 'POST' });
+        // counterapi accepts POST to increment; fallback to GET if needed
+        if (!res.ok) {
+          // try GET fallback
+          const res2 = await fetch('https://api.counterapi.dev/v1/reigenwrites/bot_verifications');
+          const data2 = await res2.json();
+          return data2.count;
         }
-        
-        updateCounter();
-    </script>
+        const data = await res.json();
+        return data.count;
+      } catch (e) {
+        console.warn('visitor counter failed', e);
+        return null;
+      }
+    }
 
+    (async function initCounter(){
+      const el = document.getElementById('visitorCount');
+      el.innerText = '...';
+      const count = await fetchVisitorCount();
+      if (count == null) { el.innerText = 'OFFLINE'; }
+      else { el.innerText = Number(count).toLocaleString(); }
+      // Do NOT auto-refresh too frequently; this increments the counter on each POST.
+      // If you want a non-incrementing read, call the GET endpoint instead.
+    })();
+  </script>
 </body>
 </html>
