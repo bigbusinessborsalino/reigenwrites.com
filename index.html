@@ -30,6 +30,12 @@ h1{
     margin-top:0;
 }
 
+/* code blocks */
+
+.code-block{
+    position:relative;
+}
+
 pre{
     background:#f4f4f4;
     padding:15px;
@@ -37,26 +43,31 @@ pre{
     overflow:auto;
 }
 
-.code-block{
-    position:relative;
-}
+/* copy icon button */
 
 .copy-btn{
     position:absolute;
     top:8px;
     right:8px;
-    background:#ff0000;
-    color:white;
+    background:transparent;
     border:none;
-    padding:4px 10px;
-    font-size:12px;
-    border-radius:5px;
+    padding:6px;
+    border-radius:6px;
     cursor:pointer;
+    opacity:0.6;
 }
 
 .copy-btn:hover{
-    background:#cc0000;
+    background:#eaeaea;
+    opacity:1;
 }
+
+.copy-btn svg{
+    width:18px;
+    height:18px;
+}
+
+/* social icons */
 
 .social{
     margin-top:30px;
@@ -115,18 +126,36 @@ ready-to-run deep learning experiment templates into the next notebook cell.
 <h2>Installation</h2>
 
 <div class="code-block">
-<button class="copy-btn" onclick="copyCode('install',this)">Copy</button>
+
+<button class="copy-btn" onclick="copyCode('install')">
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor"
+viewBox="0 0 24 24">
+<rect x="9" y="9" width="13" height="13" rx="2"></rect>
+<rect x="2" y="2" width="13" height="13" rx="2"></rect>
+</svg>
+</button>
+
 <pre id="install">pip install sumit403 -v</pre>
+
 </div>
 
 
 <h2>Usage</h2>
 
 <div class="code-block">
-<button class="copy-btn" onclick="copyCode('usage',this)">Copy</button>
+
+<button class="copy-btn" onclick="copyCode('usage')">
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor"
+viewBox="0 0 24 24">
+<rect x="9" y="9" width="13" height="13" rx="2"></rect>
+<rect x="2" y="2" width="13" height="13" rx="2"></rect>
+</svg>
+</button>
+
 <pre id="usage">import sumit403
 
 sumit403.p1()</pre>
+
 </div>
 
 <p>This will inject the code for experiment 1 into a new notebook cell.</p>
@@ -193,19 +222,14 @@ async function updateViews(){
 
 updateViews();
 
-/* copy button */
+/* copy function */
 
-function copyCode(id, btn){
+function copyCode(id){
 
     const text = document.getElementById(id).innerText;
 
     navigator.clipboard.writeText(text);
 
-    btn.innerText="Copied";
-
-    setTimeout(()=>{
-        btn.innerText="Copy";
-    },1500);
 }
 
 </script>
