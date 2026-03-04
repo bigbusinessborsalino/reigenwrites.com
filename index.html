@@ -37,6 +37,27 @@ pre{
     overflow:auto;
 }
 
+.code-block{
+    position:relative;
+}
+
+.copy-btn{
+    position:absolute;
+    top:8px;
+    right:8px;
+    background:#ff0000;
+    color:white;
+    border:none;
+    padding:4px 10px;
+    font-size:12px;
+    border-radius:5px;
+    cursor:pointer;
+}
+
+.copy-btn:hover{
+    background:#cc0000;
+}
+
 .social{
     margin-top:30px;
     display:flex;
@@ -93,18 +114,20 @@ ready-to-run deep learning experiment templates into the next notebook cell.
 
 <h2>Installation</h2>
 
-<pre>
-pip install sumit403 -v
-</pre>
+<div class="code-block">
+<button class="copy-btn" onclick="copyCode('install',this)">Copy</button>
+<pre id="install">pip install sumit403 -v</pre>
+</div>
 
 
 <h2>Usage</h2>
 
-<pre>
-import sumit403
+<div class="code-block">
+<button class="copy-btn" onclick="copyCode('usage',this)">Copy</button>
+<pre id="usage">import sumit403
 
-sumit403.p1()
-</pre>
+sumit403.p1()</pre>
+</div>
 
 <p>This will inject the code for experiment 1 into a new notebook cell.</p>
 
@@ -169,6 +192,21 @@ async function updateViews(){
 }
 
 updateViews();
+
+/* copy button */
+
+function copyCode(id, btn){
+
+    const text = document.getElementById(id).innerText;
+
+    navigator.clipboard.writeText(text);
+
+    btn.innerText="Copied";
+
+    setTimeout(()=>{
+        btn.innerText="Copy";
+    },1500);
+}
 
 </script>
 
