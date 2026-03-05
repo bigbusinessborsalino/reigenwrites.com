@@ -1,44 +1,68 @@
-const express = require("express");
-const mongoose = require("mongoose");
-const axios = require("axios");
-const cors = require("cors");
+const express = require("express")
+const axios = require("axios")
+const mongoose = require("mongoose")
+const cors = require("cors")
 
-const app = express();
-app.use(express.json());
-app.use(cors());
+const app = express()
 
-mongoose.connect("mongodb+srv://sekiro:reigen100@cluster0.dwxnugf.mongodb.net/?appName=Cluster0");
+app.use(express.json())
+app.use(cors())
 
-const User = mongoose.model("User", {
-  name: String,
-  email: String
-});
+// ---------- HARD CODED CONFIG ----------
 
-const TELEGRAM_TOKEN = "8207709513:AAHmcYeKb3OXcuO4KpxZSRZAGDVEhoXyAMQ";
-const CHAT_ID = "-1003825143216";
+// MongoDB connection
+const MONGO_URI = "mongodb+srv://sekiro:reigen100@cluster0.dwxnugf.mongodb.net/?appName=Cluster0"
 
-app.post("/register", async (req, res) => {
+// Telegram bot
+const BOT_TOKEN = "8207709513:AAHmcYeKb3OXcuO4KpxZSRZAGDVEhoXyAMQ"
+const CHAT_ID = "-1003825143216"
 
-  const {name, email} = req.body;
+// ---------------------------------------
 
-  let user = await User.findOne({email});
+mongoose.connect(MONGO_URI)
+.then(()=>console.log("MongoDB connected"))
+.catch(err=>console.log(err))
 
-  if(!user){
+const User = mongoose.model("User",{
+name:String,
+email:String
+})
 
-    user = new User({name,email});
-    await user.save();
+app.post("/register", async (req,res)=>{
 
-    await axios.post(
-      `https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`,
-      {
-        chat_id: CHAT_ID,
-        text: `New visitor\nName: ${name}\nEmail: ${email}`
-      }
-    );
+try{
 
-  }
+const {name,email} = req.body
 
-  res.json({status:"ok"});
-});
+let user = await User.findOne({email})
 
-app.listen(3000);
+if(!user){
+
+user = new User({name,email})
+await user.save()
+
+await axios.post(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`,{
+chat_id:CHAT_ID,
+text:`New Documentation Visitor\n\nName: ${name}\nEmail: ${email}`
+})
+
+}
+
+res.json({status:"ok"})
+
+}catch(err){
+
+console.log(err)
+res.status(500).send("error")
+
+}
+
+})
+
+
+// ---------- RENDER PORT ----------
+const PORT = process.env.PORT || 3000
+
+app.listen(PORT,()=>{
+console.log("Server running on port "+PORT)
+})
