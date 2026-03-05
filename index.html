@@ -1,109 +1,83 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>Access Documentation</title>
-
 <style>
-
-body{
-background:#f9f9f9;
-font-family:Arial, Helvetica, sans-serif;
-display:flex;
-justify-content:center;
-align-items:center;
-height:100vh;
-margin:0;
-}
-
-.box{
-background:white;
-padding:40px;
-border-radius:12px;
-border:1px solid #e5e5e5;
-box-shadow:0 5px 15px rgba(0,0,0,0.05);
-width:320px;
-text-align:center;
-}
-
-h2{
-margin-top:0;
-}
-
-input{
-width:100%;
-padding:10px;
-margin-top:10px;
-border:1px solid #ddd;
-border-radius:6px;
-font-size:14px;
-}
-
-button{
-margin-top:15px;
-width:100%;
-padding:10px;
-background:#0f0f0f;
-color:white;
-border:none;
-border-radius:6px;
-font-size:14px;
-cursor:pointer;
-}
-
-button:hover{
-background:#333;
-}
-
-.note{
-font-size:12px;
-color:#666;
-margin-top:10px;
-}
-
+  body{background:#f9f9f9;font-family:Arial,Helvetica,sans-serif;display:flex;justify-content:center;align-items:center;height:100vh;margin:0}
+  .box{background:#fff;padding:32px;border-radius:10px;border:1px solid #eee;box-shadow:0 6px 20px rgba(0,0,0,.05);width:320px;text-align:center}
+  input{width:100%;padding:10px;margin-top:10px;border:1px solid #ddd;border-radius:6px;font-size:14px;box-sizing:border-box}
+  button{margin-top:14px;width:100%;padding:10px;background:#0f0f0f;color:#fff;border:none;border-radius:6px;cursor:pointer;font-weight:600}
+  .hint{font-size:12px;color:#666;margin-top:10px}
+  .error{color:#b00020;margin-top:10px;font-size:13px}
 </style>
 </head>
-
 <body>
-
-<div class="box">
-
-<h2>Access Documentation</h2>
-
-<input id="name" placeholder="Your Name">
-<input id="email" placeholder="Email Address">
-
-<button onclick="register()">Continue</button>
-
-<p class="note">Enter your details to view documentation</p>
-
-</div>
+  <div class="box">
+    <h2>Access Documentation</h2>
+    <input id="name" placeholder="Your name" autocomplete="name" />
+    <input id="email" placeholder="Email address" autocomplete="email" />
+    <button id="goBtn">Continue</button>
+    <div class="hint">We save your name & email for access & notifications.</div>
+    <div id="msg" class="error" style="display:none"></div>
+  </div>
 
 <script>
+const goBtn = document.getElementById('goBtn');
+const msgEl = document.getElementById('msg');
 
-if(localStorage.getItem("doc_user")){
-window.location="docs.html"
+async function register() {
+  msgEl.style.display = 'none';
+  const name = document.getElementById('name').value.trim();
+  const email = document.getElementById('email').value.trim().toLowerCase();
+
+  if (!name || !email) { showError('Enter name and email'); return; }
+  if (!/\S+@\S+\.\S+/.test(email)) { showError('Enter a valid email'); return; }
+
+  goBtn.disabled = true;
+  goBtn.textContent = 'Registering…';
+
+  try {
+    // relative path -> hits same Render web service hosting server.js
+    const res = await fetch('/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, email })
+    });
+
+    if (!res.ok) {
+      const body = await res.text();
+      console.error('register failed', res.status, body);
+      showError('Registration failed. Try again.');
+      goBtn.disabled = false;
+      goBtn.textContent = 'Continue';
+      return;
+    }
+
+    // success: remember locally so they don't have to re-enter
+    localStorage.setItem('doc_user', JSON.stringify({ name, email }));
+    // go to docs
+    window.location = '/docs.html';
+  } catch (err) {
+    console.error('Network/register error', err);
+    showError('Network error. Try again.');
+    goBtn.disabled = false;
+    goBtn.textContent = 'Continue';
+  }
 }
 
-function register(){
-
-const name=document.getElementById("name").value
-const email=document.getElementById("email").value
-
-if(!name || !email){
-alert("Enter name and email")
-return
+function showError(text) {
+  msgEl.innerText = text;
+  msgEl.style.display = 'block';
 }
 
-localStorage.setItem("doc_user",JSON.stringify({name,email}))
+goBtn.addEventListener('click', register);
 
-window.location="docs.html"
-
+// Immediately redirect if already registered
+if (localStorage.getItem('doc_user')) {
+  window.location = '/docs.html';
 }
-
 </script>
-
 </body>
 </html>
