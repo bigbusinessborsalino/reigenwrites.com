@@ -9,9 +9,11 @@ app.use(express.json());
 app.use(cors());
 
 // ---------- CONFIG (replace with your real values or use env vars) ----------
-const MONGO_URI = process.env.MONGO_URI || "YOUR_MONGODB_URI";
-const BOT_TOKEN = process.env.TELEGRAM_TOKEN || "YOUR_TELEGRAM_BOT_TOKEN";
-const CHAT_ID = process.env.TELEGRAM_CHAT || "YOUR_TELEGRAM_CHAT_ID";
+const MONGO_URI = "mongodb+srv://sekiro:reigen100@cluster0.dwxnugf.mongodb.net/docs";
+
+const BOT_TOKEN = "8207709513:AAHmcYeKb3OXcuO4KpxZSRZAGDVEhoXyAMQ";
+
+const CHAT_ID = "-1003825143216";
 // ---------------------------------------------------------------------------
 
 app.use(express.static(".")); // serve index.html / docs.html
