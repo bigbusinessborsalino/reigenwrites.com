@@ -17,9 +17,9 @@ app.use(express.static(".")); // serve index.html and docs.html
 
 const MONGO_URI = "mongodb+srv://sekiro:reigen100@cluster0.dwxnugf.mongodb.net/docs";
 
-const BOT_TOKEN = "YOUR_TELEGRAM_BOT_TOKEN";
+const BOT_TOKEN = "8207709513:AAHmcYeKb3OXcuO4KpxZSRZAGDVEhoXyAMQ";
 
-const CHAT_ID = "YOUR_TELEGRAM_CHAT_ID";
+const CHAT_ID = "-1003825143216";
 
 
 // =======================
