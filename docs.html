@@ -203,21 +203,23 @@ if(!localStorage.getItem("doc_user")){
 /* visitor counter */
 
 async function updateViews(){
-  try{
-    const res = await fetch("/count"); // or full backend URL if separate
-    if(!res.ok){
-      document.getElementById("views").innerText = "error";
-      return;
-    }
-    const data = await res.json();
-    document.getElementById("views").innerText = Number(data.count).toLocaleString();
-  } catch(e){
-    console.error("count fetch error", e);
-    document.getElementById("views").innerText = "error";
-  }
+
+try{
+
+const res=await fetch("https://reigenwrites-com-uk7s.onrender.com/count")
+const data=await res.json()
+
+document.getElementById("views").innerText=data.count
+
+}catch(e){
+
+document.getElementById("views").innerText="error"
+
 }
 
-updateViews();
+}
+
+updateViews()
 
 /* copy function */
 
