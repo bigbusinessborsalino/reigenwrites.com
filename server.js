@@ -19,7 +19,7 @@ const CHAT_ID = "-1003825143216";
 app.use(express.static(".")); // serve index.html / docs.html
 
 // Connect to MongoDB
-mongoose.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect(MONGO_URI)
   .then(() => console.log("MongoDB connected"))
   .catch((err) => console.error("MongoDB connect error:", err));
 
