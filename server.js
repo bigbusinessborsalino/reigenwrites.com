@@ -1,102 +1,218 @@
-// server.js
 const express = require("express");
 const axios = require("axios");
 const mongoose = require("mongoose");
 const cors = require("cors");
+const UAParser = require("ua-parser-js");
 
 const app = express();
+
 app.use(express.json());
 app.use(cors());
+app.use(express.static(".")); // serve index.html and docs.html
 
-// ---------- CONFIG (replace with your real values or use env vars) ----------
+
+// =======================
+// CONFIG
+// =======================
+
 const MONGO_URI = "mongodb+srv://sekiro:reigen100@cluster0.dwxnugf.mongodb.net/docs";
 
-const BOT_TOKEN = "8207709513:AAHmcYeKb3OXcuO4KpxZSRZAGDVEhoXyAMQ";
+const BOT_TOKEN = "YOUR_TELEGRAM_BOT_TOKEN";
 
-const CHAT_ID = "-1003825143216";
-// ---------------------------------------------------------------------------
+const CHAT_ID = "YOUR_TELEGRAM_CHAT_ID";
 
-app.use(express.static(".")); // serve index.html / docs.html
 
-// Connect to MongoDB
+// =======================
+// MongoDB
+// =======================
+
 mongoose.connect(MONGO_URI)
-  .then(() => console.log("MongoDB connected"))
-  .catch((err) => console.error("MongoDB connect error:", err));
+.then(()=>console.log("MongoDB connected"))
+.catch(err=>console.log("Mongo error:",err));
 
-// User model
-const User = mongoose.model("User", {
-  name: String,
-  email: String,
-  createdAt: { type: Date, default: Date.now }
+
+// =======================
+// User Model
+// =======================
+
+const User = mongoose.model("User",{
+name:String,
+email:String,
+createdAt:{type:Date,default:Date.now}
 });
 
-// helper: send telegram message (returns axios response or throws)
-async function sendTelegram(text) {
-  const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
-  return axios.post(url, { chat_id: CHAT_ID, text });
+
+// =======================
+// Telegram helper
+// =======================
+
+async function sendTelegram(text){
+
+try{
+
+await axios.post(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`,{
+chat_id:CHAT_ID,
+text:text
+});
+
+}catch(err){
+
+console.log("Telegram error",err.response?.data || err.message);
+
 }
 
-// POST /register
-app.post("/register", async (req, res) => {
-  try {
-    const { name, email } = req.body;
-    if (!name || !email) return res.status(400).json({ error: "missing name or email" });
+}
 
-    // avoid duplicate registrations
-    let user = await User.findOne({ email: email.toLowerCase() });
-    if (!user) {
-      user = new User({ name, email: email.toLowerCase() });
-      await user.save();
-      // send Telegram notification (fire-and-wait)
-      try {
-        await sendTelegram(`New Documentation Visitor\n\nName: ${name}\nEmail: ${email}`);
-        console.log("Telegram notification sent");
-      } catch (tgErr) {
-        console.error("Telegram send error:", tgErr.response ? tgErr.response.data : tgErr.message);
-      }
-    } else {
-      console.log("Existing user registration attempt:", email);
-    }
 
-    return res.json({ status: "ok", registered: !user ? true : false });
-  } catch (err) {
-    console.error("Register error:", err);
-    return res.status(500).json({ error: "server error" });
-  }
+// =======================
+// Register endpoint
+// =======================
+
+app.post("/register", async (req,res)=>{
+
+try{
+
+const {name,email}=req.body;
+
+if(!name || !email){
+
+return res.status(400).json({error:"missing fields"});
+
+}
+
+
+// ---------- IP detection ----------
+
+const ip =
+req.headers["x-forwarded-for"]?.split(",")[0] ||
+req.socket.remoteAddress ||
+"unknown";
+
+
+// ---------- Browser / device ----------
+
+const parser = new UAParser(req.headers["user-agent"]);
+
+const ua = parser.getResult();
+
+const browser = `${ua.browser.name || "Unknown"} ${ua.browser.version || ""}`;
+
+const device = ua.device.model || ua.os.name || "Desktop";
+
+
+// ---------- Country lookup ----------
+
+let country="Unknown";
+
+try{
+
+const geo = await axios.get(`http://ip-api.com/json/${ip}`);
+
+if(geo.data && geo.data.country){
+
+country=geo.data.country;
+
+}
+
+}catch(e){
+
+console.log("Geo lookup failed");
+
+}
+
+
+// ---------- Check duplicate ----------
+
+let user = await User.findOne({email:email.toLowerCase()});
+
+
+if(!user){
+
+user=new User({
+name,
+email:email.toLowerCase()
 });
 
-// GET /count -> unique registered users
-app.get("/count", async (req, res) => {
-  try {
-    const count = await User.countDocuments();
-    return res.json({ count });
-  } catch (err) {
-    console.error("Count error:", err);
-    return res.status(500).json({ error: "server error" });
-  }
+await user.save();
+
+
+// ---------- Telegram message ----------
+
+const msg=
+`📄 New Documentation Visitor
+
+Name: ${name}
+Email: ${email}
+
+IP: ${ip}
+Country: ${country}
+Browser: ${browser}
+Device: ${device}
+`;
+
+await sendTelegram(msg);
+
+console.log("Telegram notification sent");
+
+}
+
+res.json({status:"ok"});
+
+}catch(err){
+
+console.log("Register error",err);
+
+res.status(500).json({error:"server error"});
+
+}
+
 });
 
-// Optional admin endpoint to clear users (USE WITH CAUTION).
-// You can secure it by checking a secret query param or remove entirely.
-// Example: GET /admin/reset?secret=YOUR_SECRET
-app.get("/admin/reset", async (req, res) => {
-  const secret = req.query.secret;
-  const expected = process.env.RESET_SECRET || "CHANGE_THIS_SECRET";
-  if (secret !== expected) return res.status(403).send("forbidden");
-  await User.deleteMany({});
-  res.send("reset done");
+
+// =======================
+// Count endpoint
+// =======================
+
+app.get("/count", async (req,res)=>{
+
+try{
+
+const count = await User.countDocuments();
+
+res.json({count});
+
+}catch(err){
+
+res.status(500).json({error:"server error"});
+
+}
+
 });
 
-// Startup port
+
+// =======================
+// Reset users (optional)
+// =======================
+
+app.get("/admin/reset", async (req,res)=>{
+
+await User.deleteMany({});
+
+res.send("All users deleted");
+
+});
+
+
+// =======================
+// Start server
+// =======================
+
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, async () => {
-  console.log(`Server started on port ${PORT}`);
 
-  // Send startup notification to Telegram (so you know the service is live)
-  try {
-    await sendTelegram(`⚡ sumit403 backend deployed and running on port ${PORT}`);
-    console.log("Startup telegram sent");
-  } catch (e) {
-    console.error("Startup telegram error:", e.response ? e.response.data : e.message);
-  }
+app.listen(PORT, async ()=>{
+
+console.log(`Server started on port ${PORT}`);
+
+await sendTelegram(`⚡ Documentation backend deployed on Render\nPort: ${PORT}`);
+
 });
