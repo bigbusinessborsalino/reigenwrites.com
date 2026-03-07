@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Colab Game Stream</title>
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    <style>
+        body { margin: 0; background: #000; color: white; text-align: center; font-family: sans-serif; }
+        #game-screen { width: 100vw; height: auto; max-width: 1280px; border: 2px solid #333; }
+        .status { padding: 10px; font-size: 12px; color: #0f0; }
+    </style>
+</head>
+<body>
+    <div class="status" id="status">Waiting for Colab...</div>
+    <img id="game-screen" src="" alt="Game Feed">
+
+    <script>
+        const socket = io(); // Connects to your Render server
+        const screen = document.getElementById('game-screen');
+        const status = document.getElementById('status');
+
+        socket.on('connect', () => {
+            status.innerText = "Connected to Server. Waiting for Video...";
+        });
+
+        // This listens for the 'view-stream' event we added to your server.js
+        socket.on('view-stream', (base64Data) => {
+            status.innerText = "LIVE";
+            // Update the image source with the data from Colab
+            screen.src = "data:image/jpeg;base64," + base64Data;
+        });
+    </script>
+</body>
+</html>
