@@ -31,7 +31,6 @@ h1{
 }
 
 /* code blocks */
-
 .code-block{
     position:relative;
 }
@@ -44,7 +43,6 @@ pre{
 }
 
 /* copy icon button */
-
 .copy-btn{
     position:absolute;
     top:8px;
@@ -67,7 +65,6 @@ pre{
 }
 
 /* social icons */
-
 .social{
     margin-top:30px;
     display:flex;
@@ -85,7 +82,6 @@ pre{
 }
 
 /* visitor counter */
-
 .counter{
     position:fixed;
     top:15px;
@@ -101,6 +97,21 @@ pre{
 .counter span{
     color:red;
     font-weight:bold;
+}
+
+/* Image Guide Styles */
+.guide-img {
+    max-width: 100%;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    margin-top: 10px;
+    margin-bottom: 30px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.step-text {
+    font-weight: bold;
+    color: #0056b3;
 }
 
 </style>
@@ -134,7 +145,7 @@ viewBox="0 0 24 24">
 </svg>
 </button>
 
-<pre id="install">pip install sumit403==0.3</pre>
+<pre id="install">pip install sumit403</pre>
 
 </div>
 
@@ -159,6 +170,21 @@ sumit403.p1()</pre>
 
 <p>This will inject the code for experiment 1 into a new notebook cell.</p>
 
+<hr style="border: 0; border-top: 1px solid #eee; margin: 30px 0;">
+
+<h2>Special Setup for p4() (PyTorch)</h2>
+<p>Experiment <code>p4()</code> uses PyTorch, which requires a clean Conda environment. The library handles this automatically, but you must select the new kernel after it finishes building.</p>
+
+<p><span class="step-text">Step 1:</span> When you run <code>sumit403.p4()</code> for the first time, you will get an alert saying the environment is created. Click <b>OK</b>.</p>
+<img src="image_9bc59c.jpg" class="guide-img" alt="JavaScript Alert Popup">
+
+<p><span class="step-text">Step 2:</span> Go to the top Jupyter menu, click <b>Kernel</b>, and select <b>Restart Kernel...</b> or <b>Change Kernel...</b></p>
+<img src="image_9bc5bf.png" class="guide-img" alt="Jupyter Kernel Menu">
+
+<p><span class="step-text">Step 3:</span> In the dropdown box, select <b>Python (403-Lab)</b>. Once the kernel connects, you can run the code cell!</p>
+<img src="image_9bc5b8.png" class="guide-img" alt="Select 403-Lab Kernel">
+
+<hr style="border: 0; border-top: 1px solid #eee; margin: 30px 0;">
 
 <h2>Experiments</h2>
 
@@ -166,7 +192,7 @@ sumit403.p1()</pre>
 <li>p1() — Feed Forward Neural Network (MNIST)</li>
 <li>p2() — XOR Perceptron</li>
 <li>p3() — Image Classification Model</li>
-<li>p4() — Simple CNN</li>
+<li>p4() — Simple CNN (Requires 403-Lab Kernel)</li>
 <li>p5() — Sentiment Analysis (RNN)</li>
 <li>p6() — LSTM Autoencoder</li>
 <li>p7() — GAN Image Generation</li>
@@ -195,40 +221,26 @@ sumit403.p1()</pre>
 <script>
 
 /* PROTECTION CHECK */
-
 if(!localStorage.getItem("doc_user")){
     window.location="index.html"
 }
 
 /* visitor counter */
-
 async function updateViews(){
-
 try{
-
 const res=await fetch("https://reigenwrites-com-uk7s.onrender.com/count")
 const data=await res.json()
-
 document.getElementById("views").innerText=data.count
-
 }catch(e){
-
 document.getElementById("views").innerText="error"
-
 }
-
 }
-
 updateViews()
 
 /* copy function */
-
 function copyCode(id){
-
     const text = document.getElementById(id).innerText;
-
     navigator.clipboard.writeText(text);
-
 }
 
 </script>
