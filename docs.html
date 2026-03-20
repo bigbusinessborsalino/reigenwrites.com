@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>sumit403 Documentation (useful for cheeating in exam)</title>
+<title>sumit403 Documentation (useful for cheating in exam)</title>
 
 <style>
 
@@ -104,7 +104,7 @@ pre{
     max-width: 100%;
     border-radius: 8px;
     border: 1px solid #ccc;
-    margin-top: 10px;
+    margin-top: 15px;
     margin-bottom: 30px;
     box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 }
@@ -112,6 +112,16 @@ pre{
 .step-text {
     font-weight: bold;
     color: #0056b3;
+    display: block;
+    margin-top: 20px;
+}
+
+.highlight-box {
+    background: #fff9c4;
+    padding: 10px;
+    border-left: 5px solid #fbc02d;
+    margin: 20px 0;
+    border-radius: 4px;
 }
 
 </style>
@@ -132,6 +142,10 @@ Views: <span id="views">...</span>
 A small utility for <b>Jupyter Notebook</b> and <b>Google Colab</b> that injects
 ready-to-run deep learning experiment templates into the next notebook cell.
 </p>
+
+<div class="highlight-box">
+    <b>Note:</b> The library automatically checks for and installs all missing dependencies (like Torch or Matplotlib) when an experiment is called.
+</div>
 
 <h2>Installation</h2>
 
@@ -173,16 +187,18 @@ sumit403.p1()</pre>
 <hr style="border: 0; border-top: 1px solid #eee; margin: 30px 0;">
 
 <h2>Special Setup for p4() (PyTorch)</h2>
-<p>Experiment <code>p4()</code> uses PyTorch, which requires a clean Conda environment. The library handles this automatically, but you must select the new kernel after it finishes building.</p>
+<p>Experiment <code>p4()</code> requires a dedicated environment. The library will handle the heavy lifting for you.</p>
 
-<p><span class="step-text">Step 1:</span> When you run <code>sumit403.p4()</code> for the first time, you will get an alert saying the environment is created. Click <b>OK</b>.</p>
-<img src="image_9bc59c.jpg" class="guide-img" alt="JavaScript Alert Popup">
+<p>After running <code>sumit403.p4()</code>, you will receive a pop-up notification once the new environment is successfully created.</p>
+<img src="assets/step0.jpg" class="guide-img" alt="Environment Created Notification">
 
-<p><span class="step-text">Step 2:</span> Go to the top Jupyter menu, click <b>Kernel</b>, and select <b>Restart Kernel...</b> or <b>Change Kernel...</b></p>
-<img src="image_9bc5bf.png" class="guide-img" alt="Jupyter Kernel Menu">
+<span class="step-text">Step 1: Restart the Kernel</span>
+<p>Go to the top menu in Jupyter, click on <b>Kernel</b>, and select <b>Restart Kernel...</b></p>
+<img src="assets/step1.jpg" class="guide-img" alt="Restart Kernel Menu">
 
-<p><span class="step-text">Step 3:</span> In the dropdown box, select <b>Python (403-Lab)</b>. Once the kernel connects, you can run the code cell!</p>
-<img src="image_9bc5b8.png" class="guide-img" alt="Select 403-Lab Kernel">
+<span class="step-text">Step 2: Select the Environment</span>
+<p>In the "Select Kernel" dialog, choose either <b>"Python (403-Lab)"</b> or <b>"Python [conda env:403-env]"</b> to start the experiment with the correct dependencies.</p>
+<img src="assets/step2.jpg" class="guide-img" alt="Select New Kernel Environment">
 
 <hr style="border: 0; border-top: 1px solid #eee; margin: 30px 0;">
 
