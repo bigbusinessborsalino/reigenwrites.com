@@ -48,6 +48,11 @@ cursor:pointer;
 font-weight:600
 }
 
+button:disabled{
+opacity:0.6;
+cursor:not-allowed
+}
+
 .hint{
 font-size:12px;
 color:#666;
@@ -56,6 +61,12 @@ margin-top:10px
 
 .error{
 color:#b00020;
+margin-top:10px;
+font-size:13px
+}
+
+.success{
+color:green;
 margin-top:10px;
 font-size:13px
 }
@@ -68,13 +79,16 @@ font-size:13px
 
 <h2>Access Documentation</h2>
 
-<input id="name" placeholder="Your name" autocomplete="name">
-<input id="email" placeholder="Email address" autocomplete="email">
+<input id="name" placeholder="Your name">
+<input id="email" placeholder="Email address">
 
-<button id="goBtn">Continue</button>
+<button id="sendBtn">Send OTP</button>
+
+<input id="otp" placeholder="Enter OTP" style="display:none;">
+<button id="verifyBtn" style="display:none;">Verify & Continue</button>
 
 <div class="hint">
-We save your name & email for access & notifications.
+We verify your email before access.
 </div>
 
 <div id="msg" class="error" style="display:none"></div>
@@ -82,93 +96,159 @@ We save your name & email for access & notifications.
 </div>
 
 <script>
-const goBtn = document.getElementById("goBtn");
+
+const sendBtn = document.getElementById("sendBtn");
+const verifyBtn = document.getElementById("verifyBtn");
 const msgEl = document.getElementById("msg");
 
-let verified = false;
+let currentEmail = "";
 
-async function sendOtp(email){
-  const res = await fetch("https://your-backend/send-otp",{
-    method:"POST",
-    headers:{ "Content-Type":"application/json" },
-    body:JSON.stringify({email})
-  });
-  return res.json();
-}
+// 🔥 CHANGE THIS to your real backend
+const BASE_URL = ""; 
+// If same domain → keep ""
+// If different → "https://your-backend-url"
 
-async function verifyOtp(email, otp){
-  const res = await fetch("https://your-backend/verify-otp",{
-    method:"POST",
-    headers:{ "Content-Type":"application/json" },
-    body:JSON.stringify({email, otp})
-  });
-  return res;
-}
+// =======================
+// SEND OTP
+// =======================
 
-async function register(){
+sendBtn.addEventListener("click", async () => {
 
 msgEl.style.display="none";
 
-const name=document.getElementById("name").value.trim();
-const email=document.getElementById("email").value.trim().toLowerCase();
+const name = document.getElementById("name").value.trim();
+const email = document.getElementById("email").value.trim().toLowerCase();
 
 if(!name || !email){
-  showError("Enter name and email");
-  return;
+  return showError("Enter name and email");
 }
 
 if(!/\S+@\S+\.\S+/.test(email)){
-  showError("Enter valid email");
-  return;
+  return showError("Enter valid email");
 }
 
-// STEP 1 → send OTP
-await sendOtp(email);
+sendBtn.disabled = true;
+sendBtn.textContent = "Sending OTP...";
 
-const otp = prompt("Enter OTP sent to your email");
+try{
 
-if(!otp){
-  showError("OTP required");
-  return;
-}
-
-// STEP 2 → verify
-const verifyRes = await verifyOtp(email, otp);
-
-if(!verifyRes.ok){
-  showError("Invalid OTP");
-  return;
-}
-
-// STEP 3 → register
-const res=await fetch("https://your-backend/register",{
+const res = await fetch(BASE_URL + "/send-otp",{
   method:"POST",
   headers:{ "Content-Type":"application/json" },
-  body:JSON.stringify({name,email})
+  body:JSON.stringify({email})
 });
 
 if(!res.ok){
-  showError("Registration failed");
-  return;
+  throw new Error();
 }
 
-localStorage.setItem("doc_user",JSON.stringify({name,email}));
-window.location="docs.html";
+currentEmail = email;
 
+showSuccess("OTP sent! Check your email.");
+
+document.getElementById("otp").style.display = "block";
+verifyBtn.style.display = "block";
+
+sendBtn.textContent = "Resend OTP";
+sendBtn.disabled = false;
+
+}catch(err){
+showError("Failed to send OTP");
+sendBtn.disabled = false;
+sendBtn.textContent = "Send OTP";
 }
+
+});
+
+// =======================
+// VERIFY + REGISTER
+// =======================
+
+verifyBtn.addEventListener("click", async () => {
+
+msgEl.style.display="none";
+
+const name = document.getElementById("name").value.trim();
+const otp = document.getElementById("otp").value.trim();
+
+if(!otp){
+  return showError("Enter OTP");
+}
+
+verifyBtn.disabled = true;
+verifyBtn.textContent = "Verifying...";
+
+try{
+
+// VERIFY OTP
+const verifyRes = await fetch(BASE_URL + "/verify-otp",{
+  method:"POST",
+  headers:{ "Content-Type":"application/json" },
+  body:JSON.stringify({
+    email: currentEmail,
+    otp
+  })
+});
+
+if(!verifyRes.ok){
+  throw new Error("OTP invalid");
+}
+
+// REGISTER
+const registerRes = await fetch(BASE_URL + "/register",{
+  method:"POST",
+  headers:{ "Content-Type":"application/json" },
+  body:JSON.stringify({
+    name,
+    email: currentEmail
+  })
+});
+
+if(!registerRes.ok){
+  throw new Error("Register failed");
+}
+
+// SUCCESS
+localStorage.setItem("doc_user",JSON.stringify({
+  name,
+  email: currentEmail
+}));
+
+window.location = "docs.html";
+
+}catch(err){
+showError(err.message || "Verification failed");
+verifyBtn.disabled = false;
+verifyBtn.textContent = "Verify & Continue";
+}
+
+});
+
+// =======================
+// HELPERS
+// =======================
 
 function showError(text){
-msgEl.innerText=text;
-msgEl.style.display="block";
+msgEl.className = "error";
+msgEl.innerText = text;
+msgEl.style.display = "block";
 }
 
-goBtn.addEventListener("click",register);
+function showSuccess(text){
+msgEl.className = "success";
+msgEl.innerText = text;
+msgEl.style.display = "block";
+}
+
+// =======================
+// AUTO REDIRECT
+// =======================
 
 if(localStorage.getItem("doc_user")){
 window.location="docs.html";
 }
+
 </script>
- 
 
 </body>
 </html>
