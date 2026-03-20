@@ -82,71 +82,93 @@ We save your name & email for access & notifications.
 </div>
 
 <script>
+const goBtn = document.getElementById("goBtn");
+const msgEl = document.getElementById("msg");
 
-const goBtn=document.getElementById("goBtn")
-const msgEl=document.getElementById("msg")
+let verified = false;
+
+async function sendOtp(email){
+  const res = await fetch("https://your-backend/send-otp",{
+    method:"POST",
+    headers:{ "Content-Type":"application/json" },
+    body:JSON.stringify({email})
+  });
+  return res.json();
+}
+
+async function verifyOtp(email, otp){
+  const res = await fetch("https://your-backend/verify-otp",{
+    method:"POST",
+    headers:{ "Content-Type":"application/json" },
+    body:JSON.stringify({email, otp})
+  });
+  return res;
+}
 
 async function register(){
 
-msgEl.style.display="none"
+msgEl.style.display="none";
 
-const name=document.getElementById("name").value.trim()
-const email=document.getElementById("email").value.trim().toLowerCase()
+const name=document.getElementById("name").value.trim();
+const email=document.getElementById("email").value.trim().toLowerCase();
 
 if(!name || !email){
-showError("Enter name and email")
-return
+  showError("Enter name and email");
+  return;
 }
 
 if(!/\S+@\S+\.\S+/.test(email)){
-showError("Enter valid email")
-return
+  showError("Enter valid email");
+  return;
 }
 
-goBtn.disabled=true
-goBtn.textContent="Registering..."
+// STEP 1 → send OTP
+await sendOtp(email);
 
-try{
+const otp = prompt("Enter OTP sent to your email");
 
-const res=await fetch("https://reigenwrites-com-uk7s.onrender.com/register",{
-method:"POST",
-headers:{ "Content-Type":"application/json" },
-body:JSON.stringify({name,email})
-})
+if(!otp){
+  showError("OTP required");
+  return;
+}
+
+// STEP 2 → verify
+const verifyRes = await verifyOtp(email, otp);
+
+if(!verifyRes.ok){
+  showError("Invalid OTP");
+  return;
+}
+
+// STEP 3 → register
+const res=await fetch("https://your-backend/register",{
+  method:"POST",
+  headers:{ "Content-Type":"application/json" },
+  body:JSON.stringify({name,email})
+});
 
 if(!res.ok){
-showError("Registration failed")
-goBtn.disabled=false
-goBtn.textContent="Continue"
-return
+  showError("Registration failed");
+  return;
 }
 
-localStorage.setItem("doc_user",JSON.stringify({name,email}))
-
-window.location="docs.html"
-
-}catch(err){
-
-showError("Network error")
-goBtn.disabled=false
-goBtn.textContent="Continue"
-
-}
+localStorage.setItem("doc_user",JSON.stringify({name,email}));
+window.location="docs.html";
 
 }
 
 function showError(text){
-msgEl.innerText=text
-msgEl.style.display="block"
+msgEl.innerText=text;
+msgEl.style.display="block";
 }
 
-goBtn.addEventListener("click",register)
+goBtn.addEventListener("click",register);
 
 if(localStorage.getItem("doc_user")){
-window.location="docs.html"
+window.location="docs.html";
 }
-
 </script>
+ 
 
 </body>
 </html>
