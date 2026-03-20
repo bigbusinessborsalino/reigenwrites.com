@@ -93,7 +93,7 @@ app.post("/send-otp", async (req,res)=>{
     };
 
     await resend.emails.send({
-      from: "onboarding@resend.dev",
+      from: "Reigen <verify@reigenwrites.com>",
       to: email,
       subject: "Verify your email",
       html: `
