@@ -3,7 +3,7 @@ const axios = require("axios");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const UAParser = require("ua-parser-js");
-const nodemailer = require("nodemailer");
+const { Resend } = require("resend");
 
 const app = express();
 
@@ -12,16 +12,21 @@ app.use(cors());
 app.use(express.static(".")); // serve frontend
 
 // =======================
-// CONFIG
+// ENV CONFIG (RENDER)
 // =======================
 
-const MONGO_URI = "YOUR_MONGO_URI";
-const BOT_TOKEN = "YOUR_BOT_TOKEN";
-const CHAT_ID = "YOUR_CHAT_ID";
+const {
+  MONGO_URI,
+  BOT_TOKEN,
+  CHAT_ID,
+  RESEND_API_KEY
+} = process.env;
 
-// 👉 Gmail (USE APP PASSWORD)
-const EMAIL_USER = "yourgmail@gmail.com";
-const EMAIL_PASS = "your_app_password";
+// =======================
+// INIT SERVICES
+// =======================
+
+const resend = new Resend(RESEND_API_KEY);
 
 // =======================
 // MongoDB
@@ -42,22 +47,10 @@ const User = mongoose.model("User",{
 });
 
 // =======================
-// OTP STORE (TEMP)
+// OTP STORE (TEMP MEMORY)
 // =======================
 
 const otpStore = {};
-
-// =======================
-// MAIL SETUP
-// =======================
-
-const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: EMAIL_USER,
-    pass: EMAIL_PASS
-  }
-});
 
 // =======================
 // Telegram helper
@@ -82,7 +75,12 @@ app.post("/send-otp", async (req,res)=>{
   try{
     const {email} = req.body;
 
-    if(!email || !email.endsWith("@gmail.com")){
+    if(!email){
+      return res.status(400).json({error:"Email required"});
+    }
+
+    // optional restriction
+    if(!email.endsWith("@gmail.com")){
       return res.status(400).json({error:"Only Gmail allowed"});
     }
 
@@ -94,17 +92,24 @@ app.post("/send-otp", async (req,res)=>{
       verified:false
     };
 
-    await transporter.sendMail({
-      from: EMAIL_USER,
+    await resend.emails.send({
+      from: "onboarding@resend.dev",
       to: email,
       subject: "Verify your email",
-      text: `Your OTP is: ${otp}`
+      html: `
+        <div style="font-family:sans-serif;">
+          <h2>Email Verification</h2>
+          <p>Your OTP is:</p>
+          <h1 style="letter-spacing:5px;">${otp}</h1>
+          <p>This code expires in 5 minutes.</p>
+        </div>
+      `
     });
 
     res.json({message:"OTP sent"});
 
   }catch(err){
-    console.log(err);
+    console.log("OTP error:", err);
     res.status(500).json({error:"Failed to send OTP"});
   }
 });
@@ -148,39 +153,39 @@ app.post("/register", async (req,res)=>{
       return res.status(400).json({error:"missing fields"});
     }
 
-    // 🔐 CHECK VERIFIED
+    // 🔐 OTP CHECK
     const otpData = otpStore[email];
 
     if(!otpData || !otpData.verified){
       return res.status(403).json({error:"Email not verified"});
     }
 
-    // ---------- IP detection ----------
+    // ---------- IP ----------
     const ip =
       req.headers["x-forwarded-for"]?.split(",")[0] ||
       req.socket.remoteAddress ||
       "unknown";
 
-    // ---------- Browser ----------
+    // ---------- DEVICE ----------
     const parser = new UAParser(req.headers["user-agent"]);
     const ua = parser.getResult();
 
     const browser = `${ua.browser.name || "Unknown"} ${ua.browser.version || ""}`;
     const device = ua.device.model || ua.os.name || "Desktop";
 
-    // ---------- Country ----------
+    // ---------- COUNTRY ----------
     let country="Unknown";
 
     try{
       const geo = await axios.get(`http://ip-api.com/json/${ip}`);
-      if(geo.data && geo.data.country){
+      if(geo.data?.country){
         country=geo.data.country;
       }
     }catch(e){
       console.log("Geo lookup failed");
     }
 
-    // ---------- Save ----------
+    // ---------- SAVE ----------
     let user = await User.findOne({email:email.toLowerCase()});
 
     if(!user){
@@ -191,8 +196,8 @@ app.post("/register", async (req,res)=>{
 
       await user.save();
 
-      // ---------- Telegram ----------
-      const msg=
+      // ---------- TELEGRAM ----------
+      const msg =
 `📄 Verified Documentation Visitor
 
 Name: ${name}
@@ -205,7 +210,6 @@ Device: ${device}
 `;
 
       await sendTelegram(msg);
-      console.log("Telegram notification sent");
     }
 
     // 🧹 cleanup
@@ -233,7 +237,7 @@ app.get("/count", async (req,res)=>{
 });
 
 // =======================
-// RESET
+// RESET (optional)
 // =======================
 
 app.get("/admin/reset", async (req,res)=>{
@@ -249,5 +253,8 @@ const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, async ()=>{
   console.log(`Server started on port ${PORT}`);
-  await sendTelegram(`⚡ Backend deployed\nPort: ${PORT}`);
+
+  try{
+    await sendTelegram(`⚡ Backend deployed\nPort: ${PORT}`);
+  }catch(e){}
 });
